@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	// Logger
 	logger := logging.LoadJSONLogger()
 	logger.Info("Application started.")
 	
