@@ -15,15 +15,12 @@ func main() {
 	logger := logging.LoadJSONLogger()
 	logger.Info("Application started.")
 	
-	// Load environment vars
 	srv, err := server.Load()
 
 	if err != nil {
 		logger.Error(err.Error())
 		panic(err)
 	}
-
-	logger.Info("Environment variables loaded.")
 
 	// Server set up
 	serverUri := srv.Uri
