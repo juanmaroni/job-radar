@@ -34,7 +34,7 @@ func (a *ApplicationRepository) Create(ctx context.Context, app *domain.Applicat
 	return nil
 }
 
-func (a *ApplicationRepository)  List(ctx context.Context) ([]domain.Application, error) {
+func (a *ApplicationRepository) List(ctx context.Context) ([]domain.Application, error) {
 	query := `
 		SELECT id, company, role, offer_url, status, created_at, updated_at
 		FROM applications
