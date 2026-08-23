@@ -2,9 +2,9 @@ package responses
 
 import "net/http"
 
-func OkHandler(w http.ResponseWriter, r *http.Request, content []byte) string {
+func OkHandler(w http.ResponseWriter, r *http.Request, contentType string, content []byte) string {
 	var message string = "200 OK"
-	buildResponse(w, http.StatusOK, message, "", content)
+	buildResponse(w, http.StatusOK, message, contentType, content)
 
 	return message
 }

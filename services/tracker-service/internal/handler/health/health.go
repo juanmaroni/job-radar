@@ -15,5 +15,5 @@ func NewHealthHandler(logger *slog.Logger) *HealthHandler {
 }
 
 func (h *HealthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	responses.OkHandler(w, r, []byte("ok"))
+	responses.OkHandler(w, r, "", []byte("ok"))
 }
