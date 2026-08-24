@@ -75,7 +75,3 @@ func (a* ApplicationHandler) ListApplications(w http.ResponseWriter, r *http.Req
 		a.logger.Info(responses.OkHandler(w, r, "application/json", jsonRecords))
 	}
 }
-
-func (h *ApplicationHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// mux.HandleFunc("POST /applications", ...)
-}
