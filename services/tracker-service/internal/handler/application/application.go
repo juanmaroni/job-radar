@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"jobradar/tracker-service/internal/domain"
 	"jobradar/tracker-service/internal/handler/responses"
-	"jobradar/tracker-service/internal/repository"
 	"log/slog"
 	"net/http"
 )
@@ -17,10 +16,10 @@ type createApplicationRequest struct {
 
 type ApplicationHandler struct {
 	logger *slog.Logger
-	repository *repository.ApplicationRepository
+	repository ApplicationStore
 }
 
-func NewApplicationHandler(logger *slog.Logger, repo *repository.ApplicationRepository) *ApplicationHandler {
+func NewApplicationHandler(logger *slog.Logger, repo ApplicationStore) *ApplicationHandler {
 	return &ApplicationHandler {
 		logger: logger,
 		repository: repo,
