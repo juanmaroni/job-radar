@@ -16,10 +16,10 @@ type createApplicationRequest struct {
 
 type ApplicationHandler struct {
 	logger *slog.Logger
-	repository ApplicationStore
+	repository domain.ApplicationStore
 }
 
-func NewApplicationHandler(logger *slog.Logger, repo ApplicationStore) *ApplicationHandler {
+func NewApplicationHandler(logger *slog.Logger, repo domain.ApplicationStore) *ApplicationHandler {
 	return &ApplicationHandler {
 		logger: logger,
 		repository: repo,
