@@ -26,7 +26,7 @@ func NewApplicationHandler(logger *slog.Logger, repo domain.ApplicationStore) *A
 	}
 }
 
-func (a* ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Request) {
+func (a *ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Request) {
 	applicationReq := createApplicationRequest{}
 	err := json.NewDecoder(r.Body).Decode(&applicationReq)
 
@@ -58,7 +58,7 @@ func (a* ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.Re
 	}
 }
 
-func (a* ApplicationHandler) ListApplications(w http.ResponseWriter, r *http.Request) {
+func (a *ApplicationHandler) ListApplications(w http.ResponseWriter, r *http.Request) {
 	lstApplications, err := a.repository.List(r.Context())
 
 	if err != nil {
