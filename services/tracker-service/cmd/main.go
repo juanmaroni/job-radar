@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"jobradar/tracker-service/internal/config/environment"
 	"jobradar/tracker-service/internal/config/logging"
+	"jobradar/tracker-service/internal/config/rdb"
 	"jobradar/tracker-service/internal/config/server"
+	"jobradar/tracker-service/internal/domain"
 	"jobradar/tracker-service/internal/handler/application"
 	"jobradar/tracker-service/internal/handler/health"
 	"jobradar/tracker-service/internal/repository"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -19,14 +22,8 @@ import (
 func main() {
 	logger := logging.LoadJSONLogger()
 	logger.Info("Application started.")
-	
-	srv, err := server.Load()
 
-	if err != nil {
-		logger.Error(err.Error())
-		panic(err)
-	}
-
+	// PostgreSQL setup
 	dbEnv, err := environment.GetEnvVar("TRACKER_SERVICE_DATABASE_URI")
 
 	if err != nil {
@@ -43,15 +40,45 @@ func main() {
 		panic(err)
 	}
 
+	defer pool.Close()
+
 	if err = pool.Ping(ctx); err != nil {
 		logger.Error(err.Error())
 		panic(err)
 	}
 
-	repo := repository.NewApplicationRepository(pool)
-	appHandler := application.NewApplicationHandler(logger, repo)
+	// Redis setup
+	redisClient, err := rdb.CreateClient()
 
-	// Server set up
+	if err != nil {
+		logger.Error("redis client creation failed, continuing without cache", slog.String("error", err.Error()))
+	}
+
+	repo := repository.NewApplicationRepository(logger, pool)
+
+	var appStore domain.ApplicationStore = repo
+		
+	if redisClient != nil {
+		defer redisClient.Close()
+		ttl, err := rdb.LoadTtl()
+
+		if err != nil {
+			logger.Warn("redis ttl load, using default ttl", slog.String("error", err.Error()))
+		}
+
+		appStore = repository.NewCachedApplicationRepository(logger, repo, redisClient, ttl)
+	}
+
+	appHandler := application.NewApplicationHandler(logger, appStore)
+
+	// Server setup
+	srv, err := server.Load()
+
+	if err != nil {
+		logger.Error(err.Error())
+		panic(err)
+	}
+
 	serverUri := srv.Uri
 	mux := http.NewServeMux()
 	mux.Handle("GET /health", health.NewHealthHandler(logger))
