@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package matching.v1;
+
+option go_package = "jobradar/proto/gen/go/matching/v1;matchingv1";
+
+service MatchingService {
+  rpc MatchScore(MatchScoreRequest) returns (MatchScoreResponse);
+}
+
+message MatchScoreRequest {
+  string role = 1;
+  string company = 2;
+}
+
+message MatchScoreResponse {
+  int32 score = 1;
+}
