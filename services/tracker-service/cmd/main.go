@@ -21,7 +21,7 @@ import (
 
 func main() {
 	logger := logging.LoadJSONLogger()
-	logger.Info("Application started.")
+	logger.Info("Tracker service started.")
 
 	// PostgreSQL setup
 	dbEnv, err := environment.GetEnvVar("TRACKER_SERVICE_DATABASE_URI")
