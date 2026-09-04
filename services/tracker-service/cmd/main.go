@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"jobradar/tracker-service/internal/config/environment"
 	"jobradar/tracker-service/internal/config/logging"
+	"jobradar/tracker-service/internal/config/matching"
 	"jobradar/tracker-service/internal/config/rdb"
 	"jobradar/tracker-service/internal/config/server"
 	"jobradar/tracker-service/internal/domain"
@@ -47,16 +48,27 @@ func main() {
 		panic(err)
 	}
 
-	// Redis setup
+	// Redis client setup
 	redisClient, err := rdb.CreateClient()
 
 	if err != nil {
 		logger.Error("redis client creation failed, continuing without cache", slog.String("error", err.Error()))
 	}
 
+	// gRPC client setup
+	grpcClient, err := matching.NewGrpcClient()
+
+	if err != nil {
+		logger.Error("gRPC matching client creation failed, continuing without it", slog.String("error", err.Error()))
+	}
+
 	repo := repository.NewApplicationRepository(logger, pool)
 
 	var appStore domain.ApplicationStore = repo
+
+	if err == nil {
+		appStore = repository.NewMatchScoringApplicationRepository(logger, repo, grpcClient)
+	}
 		
 	if redisClient != nil {
 		defer redisClient.Close()
@@ -66,7 +78,7 @@ func main() {
 			logger.Warn("redis ttl load, using default ttl", slog.String("error", err.Error()))
 		}
 
-		appStore = repository.NewCachedApplicationRepository(logger, repo, redisClient, ttl)
+		appStore = repository.NewCachedApplicationRepository(logger, appStore, redisClient, ttl)
 	}
 
 	appHandler := application.NewApplicationHandler(logger, appStore)
