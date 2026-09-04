@@ -1,19 +1,23 @@
 FROM golang:1.27-bookworm AS build
 
 WORKDIR /service
-COPY go.mod go.sum /service
+
+COPY proto/ ./proto/
+COPY services/tracker-service/ ./services/tracker-service/
+
+WORKDIR /service/services/tracker-service
 RUN go mod download
-COPY . /service
-RUN go build -o server cmd/main.go
+RUN go build -o tracker cmd/main.go
 
 
 FROM debian:bookworm-slim
 
 WORKDIR /service
-COPY --from=build /service/server /service/bin/server
 
-RUN chmod +x /service/bin/server
+COPY --from=build /service/services/tracker-service/tracker /service/bin/tracker
+
+RUN chmod +x /service/bin/tracker
 
 EXPOSE 8080
 
-ENTRYPOINT ["/service/bin/server"]
+ENTRYPOINT ["/service/bin/tracker"]
