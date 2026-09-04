@@ -27,6 +27,7 @@ type Application struct {
 	Role string
 	OfferUrl string
 	Status Status
+	MatchScore *int32
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

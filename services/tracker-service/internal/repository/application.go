@@ -23,18 +23,19 @@ func NewApplicationRepository(logger *slog.Logger, pool *pgxpool.Pool) *Applicat
 
 func (ar *ApplicationRepository) Create(ctx context.Context, app *domain.Application) error {
 	query := `
-		INSERT INTO applications (company, role, offer_url, status, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO applications (company, role, offer_url, status, match_score, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id;
 	`
 
 	err := ar.pool.QueryRow(
-		ctx, query, app.Company, app.Role, app.OfferUrl, app.Status, app.CreatedAt, app.UpdatedAt,
+		ctx, query, app.Company, app.Role, app.OfferUrl, app.Status, app.MatchScore, app.CreatedAt, app.UpdatedAt,
 	).Scan(&app.Id)
 
 	if err != nil {
 		errInsert := fmt.Errorf("postgres insert application: %w", err)
 		ar.logger.Error("postgres insert failed", slog.String("error", errInsert.Error()))
+		
 		return errInsert
 	}
 
@@ -43,7 +44,7 @@ func (ar *ApplicationRepository) Create(ctx context.Context, app *domain.Applica
 
 func (ar *ApplicationRepository) List(ctx context.Context) ([]domain.Application, error) {
 	query := `
-		SELECT id, company, role, offer_url, status, created_at, updated_at
+		SELECT id, company, role, offer_url, status, match_score, created_at, updated_at
 		FROM applications
 		ORDER BY created_at DESC;
 	`
@@ -60,7 +61,7 @@ func (ar *ApplicationRepository) List(ctx context.Context) ([]domain.Application
 
 	for rows.Next() {
 		var app domain.Application
-		err := rows.Scan(&app.Id, &app.Company, &app.Role, &app.OfferUrl, &app.Status, &app.CreatedAt, &app.UpdatedAt)
+		err := rows.Scan(&app.Id, &app.Company, &app.Role, &app.OfferUrl, &app.Status, &app.MatchScore, &app.CreatedAt, &app.UpdatedAt)
 
 		if err != nil {
 			ar.logger.Error("postgres scan failed", slog.String("error", err.Error()))
