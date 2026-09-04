@@ -5,7 +5,7 @@ import (
 	"jobradar/matching-service/internal/config/logging"
 	configserver "jobradar/matching-service/internal/config/server"
 	matchingserver "jobradar/matching-service/internal/server"
-	matching "jobradar/proto/gen/go/matching/v1"
+	matchingproto "jobradar/proto/gen/go/matching/v1"
 	"net"
 
 	"google.golang.org/grpc"
@@ -36,7 +36,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	matching.RegisterMatchingServiceServer(grpcServer, matchingserver.NewMatchingServer())
+	matchingproto.RegisterMatchingServiceServer(grpcServer, matchingserver.NewMatchingServer())
 
 	if err := grpcServer.Serve(lis); err != nil {
 		logger.Error(err.Error())

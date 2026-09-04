@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	matching "jobradar/proto/gen/go/matching/v1"
+	matchingproto "jobradar/proto/gen/go/matching/v1"
 	"jobradar/tracker-service/internal/domain"
 	"log/slog"
 	"time"
@@ -11,10 +11,10 @@ import (
 type MatchScoringApplicationRepository struct {
 	logger *slog.Logger
     inner domain.ApplicationStore
-    grpc matching.MatchingServiceClient
+    grpc matchingproto.MatchingServiceClient
 }
 
-func NewMatchScoringApplicationRepository(logger *slog.Logger, inner domain.ApplicationStore, grpcClient matching.MatchingServiceClient) *MatchScoringApplicationRepository {
+func NewMatchScoringApplicationRepository(logger *slog.Logger, inner domain.ApplicationStore, grpcClient matchingproto.MatchingServiceClient) *MatchScoringApplicationRepository {
     return &MatchScoringApplicationRepository{
         logger: logger,
         inner:  inner,
@@ -30,7 +30,7 @@ func (msar *MatchScoringApplicationRepository) Create(ctx context.Context, app *
 	grpcCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
 	defer cancel()
 
-	resp, err := msar.grpc.MatchScore(grpcCtx, &matching.MatchScoreRequest{Role: app.Role, Company: app.Company})
+	resp, err := msar.grpc.MatchScore(grpcCtx, &matchingproto.MatchScoreRequest{Role: app.Role, Company: app.Company})
 
 	if err != nil {
 		msar.logger.Warn("grpc matchscore failed", slog.String("error", err.Error()))
