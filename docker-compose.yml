@@ -25,6 +25,7 @@ services:
       - "50051:50051"
  
   postgres:
+    container_name: postgres
     image: postgres:18.6-alpine
     restart: always
     env_file:
@@ -46,6 +47,7 @@ services:
       - ./postgres-data:/var/lib/postgresql
   
   redis_tracker:
+    container_name: redis_tracker
     image: redis:8.10.1-alpine
     restart: always
     env_file:
@@ -57,3 +59,34 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  redpanda:
+    container_name: redpanda
+    image: redpandadata/redpanda:v26.2.2
+    ports:
+      - "18081:18081"
+      - "18082:18082"
+      - "19092:19092"
+    command:
+      - redpanda
+      - start
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
+      - --pandaproxy-addr=internal://0.0.0.0:8082,external://0.0.0.0:18082
+      - --advertise-pandaproxy-addr=internal://redpanda:8082,external://localhost:18082
+      - --schema-registry-addr=internal://0.0.0.0:8081,external://0.0.0.0:18081
+      - --rpc-addr=redpanda:33145
+      - --advertise-rpc-addr=redpanda:33145
+      - --mode=dev-container
+      - --smp=1
+      - --default-log-level=info
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "info"]
+      interval: 10s
+      timeout: 15s
+      retries: 10
+    volumes:
+      - redpanda:/var/lib/redpanda/data
+
+volumes:
+  redpanda:
