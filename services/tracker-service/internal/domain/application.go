@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-var ErrInvalidCompany = errors.New("no company provided") 
-var ErrInvalidRole= errors.New("no role provided") 
+var ErrInvalidCompany = errors.New("no company provided")
+var ErrInvalidRole= errors.New("no role provided")
 
 type Status string
 
