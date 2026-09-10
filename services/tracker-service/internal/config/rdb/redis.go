@@ -25,8 +25,7 @@ func CreateClient() (*redis.Client, error) {
 
 	redisUri := redisHost + ":" + redisPort
 
-	return redis.NewClient(
-		&redis.Options{Addr: redisUri}), nil
+	return redis.NewClient(&redis.Options{Addr: redisUri}), nil
 }
 
 func LoadTtl() (time.Duration, error) {
