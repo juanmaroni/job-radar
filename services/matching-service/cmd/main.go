@@ -23,16 +23,14 @@ func main() {
 		panic(err)
 	}
 
-	serverPort := srv.Port
-
-	lis, err := net.Listen("tcp", serverPort)
+	lis, err := net.Listen("tcp", srv.Port)
 
 	if err != nil {
 		logger.Error(err.Error())
 		panic(err)
 	}
 
-	logger.Info(fmt.Sprintf("Starting server at '%s'.", serverPort))
+	logger.Info(fmt.Sprintf("Starting server at '%s'.", srv.Port))
 
 	grpcServer := grpc.NewServer()
 
