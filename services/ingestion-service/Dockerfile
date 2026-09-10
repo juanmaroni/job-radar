@@ -12,6 +12,8 @@ RUN go build -o ingestion ./cmd
 
 FROM debian:bookworm-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /service
 
 COPY --from=build /service/services/ingestion-service/ingestion /service/bin/ingestion
