@@ -26,7 +26,11 @@ func main() {
 		panic(err)
 	}
 
-	kafkaWriter := &kafka.Writer{Addr: kafka.TCP(brokerCfg.Uri), Topic: "jobs.new"}
+	kafkaWriter := &kafka.Writer{
+		Addr: kafka.TCP(brokerCfg.Uri),
+		Topic: "jobs.new",
+		AllowAutoTopicCreation: true,
+	}
 	httpCli := &http.Client{
 		Timeout: 5 * time.Second,
 	}
