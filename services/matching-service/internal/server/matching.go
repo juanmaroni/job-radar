@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"jobradar/matching-service/internal/scoring"
 	matchingproto "jobradar/proto/gen/go/matching/v1"
 )
 
@@ -14,9 +15,7 @@ func NewMatchingServer() *matchingServer {
 }
 
 func (ms *matchingServer) MatchScore(ctx context.Context, req *matchingproto.MatchScoreRequest) (*matchingproto.MatchScoreResponse, error) {
-	matchResp := matchingproto.MatchScoreResponse{
-		Score: int32(len(req.Role)) % 100,
-	}
-
-	return &matchResp, nil
+	return &matchingproto.MatchScoreResponse{
+		Score: scoring.CalculateScore(req.Role),
+	}, nil
 }
