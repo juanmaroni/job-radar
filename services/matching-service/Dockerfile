@@ -3,6 +3,7 @@ FROM golang:1.27-bookworm AS build
 WORKDIR /service
 
 COPY proto/ ./proto/
+COPY events/ ./events/
 COPY services/matching-service/ ./services/matching-service/
 
 WORKDIR /service/services/matching-service
