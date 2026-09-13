@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"jobradar/matching-service/internal/config/broker"
+	"jobradar/matching-service/internal/config/keywords"
 	"jobradar/matching-service/internal/config/logging"
 	configserver "jobradar/matching-service/internal/config/server"
 	"jobradar/matching-service/internal/consumer"
@@ -40,7 +41,14 @@ func main() {
 		AllowAutoTopicCreation: true,
 	}
 
-	consumer := consumer.NewConsumer(logger, kafkaReader, kafkaWriter)
+	kw, err := keywords.Load()
+
+	if err != nil {
+		logger.Error(err.Error())
+		panic(err)
+	}
+
+	consumer := consumer.NewConsumer(logger, kafkaReader, kafkaWriter, kw)
 	ctx := context.Background()
 
 	go func() {
@@ -71,7 +79,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	matchingproto.RegisterMatchingServiceServer(grpcServer, matchingserver.NewMatchingServer())
+	matchingproto.RegisterMatchingServiceServer(grpcServer, matchingserver.NewMatchingServer(kw))
 
 	if err := grpcServer.Serve(lis); err != nil {
 		logger.Error(err.Error())
