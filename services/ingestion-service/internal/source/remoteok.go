@@ -19,6 +19,7 @@ type remoteOKJob struct {
     Location  string `json:"location"`
     SalaryMin int32  `json:"salary_min"`
     SalaryMax int32  `json:"salary_max"`
+	Description string `json:"description"`
     Date      string `json:"date"`
 }
 
@@ -99,7 +100,7 @@ func (roks *RemoteOKSource) FetchJobs(ctx context.Context) ([]domain.Job, error)
 		}
 
 		// Construct job
-		job, err := domain.NewJob("RemoteOK", jsonJob.ID, jsonJob.Company, jsonJob.Position, jsonJob.URL, jsonJob.Location, salaryMin, salaryMax, publishedAt)
+		job, err := domain.NewJob("RemoteOK", jsonJob.ID, jsonJob.Company, jsonJob.Position, jsonJob.URL, jsonJob.Location, jsonJob.Description, salaryMin, salaryMax, publishedAt)
 
 		if err != nil {
 			roks.logger.Warn("failed to construct job struct", slog.String("error", err.Error()))

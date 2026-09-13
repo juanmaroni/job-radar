@@ -19,11 +19,12 @@ type Job struct {
     Location string
     SalaryMin *int32
     SalaryMax *int32
+	Description string
     PublishedAt *time.Time
     CreatedAt time.Time
 }
 
-func NewJob(source, sourceId, company, role, offerUrl, location string, salaryMin, salaryMax *int32, publishedAt *time.Time) (*Job, error) {
+func NewJob(source, sourceId, company, role, offerUrl, location, description string, salaryMin, salaryMax *int32, publishedAt *time.Time) (*Job, error) {
 	if company == "" {
 		return nil, ErrInvalidCompany
 	} else if role == "" {
@@ -51,6 +52,7 @@ func NewJob(source, sourceId, company, role, offerUrl, location string, salaryMi
 		Location: location,
 		SalaryMin: salaryMin,
 		SalaryMax: salaryMax,
+		Description: description,
 		PublishedAt: publishedAt,
 		CreatedAt: now,
 	}, nil
