@@ -14,13 +14,15 @@ type Consumer struct {
 	logger *slog.Logger
 	reader *kafka.Reader
 	writer *kafka.Writer
+	keywords []string
 }
 
-func NewConsumer(logger *slog.Logger, reader *kafka.Reader, writer *kafka.Writer) *Consumer {
+func NewConsumer(logger *slog.Logger, reader *kafka.Reader, writer *kafka.Writer, keywords []string) *Consumer {
 	return &Consumer{
 		logger: logger,
 		reader: reader,
 		writer: writer,
+		keywords: keywords,
 	}
 }
 
@@ -39,7 +41,7 @@ func (c *Consumer) Run(ctx context.Context) error {
 			continue
 		}
 
-		score := scoring.CalculateScore(jobPublished.Role)
+		score := scoring.CalculateScore(jobPublished.Description, c.keywords)
 
 		jobMatched := events.JobMatchedEvent{
 			SourceId: jobPublished.SourceId,
