@@ -8,14 +8,15 @@ import (
 
 type matchingServer struct {
 	matchingproto.UnimplementedMatchingServiceServer
+	keywords []string
 }
 
-func NewMatchingServer() *matchingServer {
-    return &matchingServer{}
+func NewMatchingServer(keywords []string) *matchingServer {
+    return &matchingServer{keywords: keywords}
 }
 
 func (ms *matchingServer) MatchScore(ctx context.Context, req *matchingproto.MatchScoreRequest) (*matchingproto.MatchScoreResponse, error) {
 	return &matchingproto.MatchScoreResponse{
-		Score: scoring.CalculateScore(req.Role),
+		Score: scoring.CalculateScore(req.Description, ms.keywords),
 	}, nil
 }
