@@ -11,6 +11,7 @@ service MatchingService {
 message MatchScoreRequest {
   string role = 1;
   string company = 2;
+  string description = 3;
 }
 
 message MatchScoreResponse {
