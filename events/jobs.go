@@ -6,5 +6,5 @@ type JobPublishedEvent struct {
     Company  string `json:"company"`
     Role     string `json:"role"`
     OfferUrl string `json:"offer_url"`
-	Dexcription string `json:"description"`
+	Description string `json:"description"`
 }

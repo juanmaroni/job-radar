@@ -24,6 +24,5 @@ func Load() ([]string, error) {
 		keywordsTrimmed = append(keywordsTrimmed, strings.TrimSpace(k))
 	}
 
-
 	return keywordsTrimmed, nil
 }
