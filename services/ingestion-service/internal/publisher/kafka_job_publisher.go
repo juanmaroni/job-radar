@@ -26,6 +26,7 @@ func (kjp *KafkaJobPublisher) Publish(ctx context.Context, job domain.Job) error
 		Company: job.Company,
 		Role: job.Role,
 		OfferUrl: job.OfferUrl,
+		Description: job.Description,
 	}
 
 	jsonJobPublished, err := json.Marshal(jobPublished)
