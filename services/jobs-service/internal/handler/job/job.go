@@ -1,4 +1,4 @@
-package handler
+package job
 
 import (
 	"encoding/json"
@@ -25,7 +25,7 @@ func (jh *JobHandler) ListJobs(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		jh.logger.Error(responses.InternalServerErrorHandler(w, r))
-		
+
 		return
 	}
 
