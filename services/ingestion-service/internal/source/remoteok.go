@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const remoteOkApiUrl = "https://remoteok.com/api"
+const RemoteOkApiUrl = "https://remoteok.com/api"
 
 type remoteOKJob struct {
     ID        string `json:"id"`
@@ -26,17 +26,19 @@ type remoteOKJob struct {
 type RemoteOKSource struct {
 	logger *slog.Logger
 	cli *http.Client
+	apiUrl string
 }
 
-func NewRemoteOKSource(logger*slog.Logger, cli *http.Client) *RemoteOKSource {
+func NewRemoteOKSource(logger*slog.Logger, cli *http.Client, apiUrl string) *RemoteOKSource {
     return &RemoteOKSource{
 		logger: logger,
 		cli: cli,
+		apiUrl: apiUrl,
 	}
 }
 
 func (roks *RemoteOKSource) FetchJobs(ctx context.Context) ([]domain.Job, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, remoteOkApiUrl, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, roks.apiUrl, nil)
 
 	if err != nil {
 		roks.logger.Error(err.Error())

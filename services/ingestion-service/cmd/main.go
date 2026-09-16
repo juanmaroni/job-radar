@@ -34,7 +34,7 @@ func main() {
 	httpCli := &http.Client{
 		Timeout: 5 * time.Second,
 	}
-	remoteokSrc := source.NewRemoteOKSource(logger, httpCli)
+	remoteokSrc := source.NewRemoteOKSource(logger, httpCli, source.RemoteOkApiUrl)
 	kafkaJobPublisher := publisher.NewKafkaJobPublisher(logger, kafkaWriter)
 	ctx := context.Background()
 	ticker, err := broker.LoadTicker()
