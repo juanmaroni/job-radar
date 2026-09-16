@@ -1,3 +1,5 @@
+\connect tracker_service
+
 CREATE TYPE status_type AS ENUM ('applied', 'interview', 'offer', 'rejected');
 
 CREATE TABLE applications (
@@ -9,3 +11,6 @@ CREATE TABLE applications (
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+GRANT ALL PRIVILEGES ON TABLE applications TO tracker_service;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO tracker_service;

@@ -1,3 +1,5 @@
+\connect jobs_service
+
 CREATE TABLE jobs (
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     source     TEXT NOT NULL,
@@ -8,3 +10,6 @@ CREATE TABLE jobs (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(source, source_id)
 );
+
+GRANT ALL PRIVILEGES ON TABLE jobs TO jobs_service;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO jobs_service;
