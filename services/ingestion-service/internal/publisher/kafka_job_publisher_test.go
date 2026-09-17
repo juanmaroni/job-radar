@@ -16,15 +16,15 @@ import (
 
 type fakeWriter struct {
     lastMessages []kafka.Message
-    err          error
+    err error
 }
 
-func (f *fakeWriter) WriteMessages(ctx context.Context, msgs ...kafka.Message) error {
-    if f.err != nil {
-        return f.err
+func (fw *fakeWriter) WriteMessages(ctx context.Context, msgs ...kafka.Message) error {
+    if fw.err != nil {
+        return fw.err
     }
 
-    f.lastMessages = msgs
+    fw.lastMessages = msgs
 
     return nil
 }
@@ -35,12 +35,11 @@ func TestPublish_EventCreated(t *testing.T) {
 		lastMessages: []kafka.Message{},
 		err: nil,
 	}
-
 	jobPublisher := NewKafkaJobPublisher(
 		slog.New(slog.DiscardHandler),
 		writer,
 	)
-
+	
 	job, err := domain.NewJob("RemoteOK", "1", "Acme", "Backend Engineer", "https://www.acme.com/jobs/1", "Remote", "Go and PostgreSQL", nil, nil, nil)
 
 	require.NoError(t, err)
@@ -52,8 +51,8 @@ func TestPublish_EventCreated(t *testing.T) {
 
 	var event events.JobPublishedEvent
     err = json.Unmarshal(writer.lastMessages[0].Value, &event)
-    require.NoError(t, err)
-
+    
+	require.NoError(t, err)
     assert.Equal(t, "Acme", event.Company)
     assert.Equal(t, "Backend Engineer", event.Role)
 	assert.Equal(t, "https://www.acme.com/jobs/1", event.OfferUrl)
