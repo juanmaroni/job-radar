@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"jobradar/ingestion-service/internal/domain"
 	"log/slog"
 	"net/http"
@@ -51,6 +52,13 @@ func (roks *RemoteOKSource) FetchJobs(ctx context.Context) ([]domain.Job, error)
 	if err != nil {
 		roks.logger.Error(err.Error())
 
+		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		err := fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		roks.logger.Error(err.Error())
+		
 		return nil, err
 	}
 
