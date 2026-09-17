@@ -12,12 +12,12 @@ import (
 
 type Consumer struct {
 	logger *slog.Logger
-	reader *kafka.Reader
-	writer *kafka.Writer
+	reader kafkaReader
+	writer kafkaWriter
 	keywords []string
 }
 
-func NewConsumer(logger *slog.Logger, reader *kafka.Reader, writer *kafka.Writer, keywords []string) *Consumer {
+func NewConsumer(logger *slog.Logger, reader kafkaReader, writer kafkaWriter, keywords []string) *Consumer {
 	return &Consumer{
 		logger: logger,
 		reader: reader,
