@@ -12,11 +12,14 @@ import (
 
 type KafkaJobPublisher struct {
 	logger *slog.Logger
-	writer *kafka.Writer
+	writer kafkaWriter
 }
 
-func NewKafkaJobPublisher(logger *slog.Logger, writer *kafka.Writer) *KafkaJobPublisher {
-    return &KafkaJobPublisher{logger: logger, writer: writer}
+func NewKafkaJobPublisher(logger *slog.Logger, writer kafkaWriter) *KafkaJobPublisher {
+    return &KafkaJobPublisher{
+		logger: logger,
+		writer: writer,
+	}
 }
 
 func (kjp *KafkaJobPublisher) Publish(ctx context.Context, job domain.Job) error {
