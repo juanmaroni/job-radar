@@ -6,17 +6,15 @@ import (
 	"jobradar/events"
 	"jobradar/jobs-service/internal/domain"
 	"log/slog"
-
-	"github.com/segmentio/kafka-go"
 )
 
 type Consumer struct {
     logger *slog.Logger
-    reader *kafka.Reader
+    reader kafkaReader
     store domain.JobStore
 }
 
-func NewConsumer(logger *slog.Logger, reader *kafka.Reader, store domain.JobStore) *Consumer {
+func NewConsumer(logger *slog.Logger, reader kafkaReader, store domain.JobStore) *Consumer {
 	return &Consumer{
 		logger: logger,
 		reader: reader,
