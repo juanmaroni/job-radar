@@ -59,7 +59,7 @@ func (c *Consumer) Run(ctx context.Context) error {
 		}
 
 		if err = c.writer.WriteMessages(ctx, kafka.Message{
-			Key:   []byte(jobPublished.SourceId),
+			Key: []byte(jobPublished.SourceId),
 			Value: jsonJobMatched,
 		}); err != nil {
 			c.logger.Error("consumer writing failed", slog.String("error", err.Error()))
