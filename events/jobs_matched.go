@@ -5,5 +5,6 @@ type JobMatchedEvent struct {
     Source   string `json:"source"`
     Company  string `json:"company"`
     Role     string `json:"role"`
+	OfferUrl string `json:"offer_url"`
     Score    int32  `json:"score"`
 }

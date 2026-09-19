@@ -53,7 +53,18 @@ func TestRun_Success(t *testing.T) {
 	ctx := context.Background()
 	reader := &fakeReader{
 		messages: []kafka.Message{
-			{Value: []byte(`{"source": "RemoteOK", "source_id": "1", "company": "Acme", "role": "Backend Go Developer", "description": "Go and PostgreSQL"}`)},
+			{
+				Value: []byte(
+				`{
+					"source": "RemoteOK",
+					"source_id": "1",
+					"company": "Acme",
+					"role": "Backend Go Developer",
+					"offer_url": "https://www.acme/jobs/1",
+					"description": "Go and PostgreSQL"
+				}`,
+			),
+			},
 		},
 		err: errors.New("no more messages"),
 	}

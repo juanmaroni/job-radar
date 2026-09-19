@@ -48,6 +48,7 @@ func (c *Consumer) Run(ctx context.Context) error {
 			Source: jobPublished.Source,
 			Company: jobPublished.Company,
 			Role: jobPublished.Role,
+			OfferUrl: jobPublished.OfferUrl,
 			Score: score,
 		}
 
