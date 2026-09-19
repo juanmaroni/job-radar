@@ -98,11 +98,7 @@ func TestRun_FailUnmarshal(t *testing.T) {
 		},
 		err: errors.New("no more messages"),
 	}
-	jobStore := &fakeJobStore{
-		createErr: errors.New("run create error"),
-		listErr: nil,
-		jobs: []domain.Job{},
-	}
+	jobStore := &fakeJobStore{}
 	consumer := NewConsumer(
 		slog.New(slog.DiscardHandler),
 		reader,
@@ -114,7 +110,6 @@ func TestRun_FailUnmarshal(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "no more messages")
 	assert.Equal(t, reader.calls, 1)
-	require.Error(t, jobStore.createErr)
 	require.Len(t, jobStore.jobs, 0)
 }
 
@@ -126,11 +121,7 @@ func TestRun_FailJobConstruction(t *testing.T) {
 		},
 		err: errors.New("no more messages"),
 	}
-	jobStore := &fakeJobStore{
-		createErr: errors.New("run job construction error"),
-		listErr: nil,
-		jobs: []domain.Job{},
-	}
+	jobStore := &fakeJobStore{}
 	consumer := NewConsumer(
 		slog.New(slog.DiscardHandler),
 		reader,
@@ -142,6 +133,5 @@ func TestRun_FailJobConstruction(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "no more messages")
 	assert.Equal(t, reader.calls, 1)
-	require.Error(t, jobStore.createErr)
 	require.Len(t, jobStore.jobs, 0)
 }
