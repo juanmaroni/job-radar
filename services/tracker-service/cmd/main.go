@@ -7,6 +7,7 @@ import (
 	"jobradar/tracker-service/internal/config/environment"
 	"jobradar/tracker-service/internal/config/logging"
 	"jobradar/tracker-service/internal/config/matching"
+	"jobradar/tracker-service/internal/config/middleware"
 	"jobradar/tracker-service/internal/config/rdb"
 	"jobradar/tracker-service/internal/config/server"
 	"jobradar/tracker-service/internal/domain"
@@ -90,6 +91,13 @@ func main() {
 		logger.Error(err.Error())
 		panic(err)
 	}
+	
+	allowedOrigin, err := environment.GetEnvVar("FRONTEND_URI")
+
+	if err != nil {
+		logger.Error(err.Error())
+		panic(err)
+	}
 
 	serverUri := srv.Uri
 	mux := http.NewServeMux()
@@ -99,8 +107,8 @@ func main() {
 
 	logger.Info(fmt.Sprintf("Starting server at '%s'.", serverUri))
 
-	logMux := logging.HttpRequestLogging(logger)(mux)
-	err = http.ListenAndServe(serverUri, logMux)
+	handler := logging.HttpRequestLogging(logger)(middleware.CORS(allowedOrigin)(mux))
+	err = http.ListenAndServe(serverUri, handler)
 
 	if errors.Is(err, http.ErrServerClosed) {
 		logger.Error("Error: server closed.")

@@ -7,6 +7,7 @@ import (
 	"jobradar/jobs-service/internal/config/broker"
 	"jobradar/jobs-service/internal/config/environment"
 	"jobradar/jobs-service/internal/config/logging"
+	"jobradar/jobs-service/internal/config/middleware"
 	"jobradar/jobs-service/internal/config/server"
 	"jobradar/jobs-service/internal/consumer"
 	"jobradar/jobs-service/internal/handler/health"
@@ -84,6 +85,13 @@ func main() {
 		panic(err)
 	}
 
+	allowedOrigin, err := environment.GetEnvVar("FRONTEND_URI")
+
+	if err != nil {
+		logger.Error(err.Error())
+		panic(err)
+	}
+
 	serverUri := srv.Uri
 	mux := http.NewServeMux()
 	mux.Handle("GET /health", health.NewHealthHandler(logger))
@@ -91,8 +99,8 @@ func main() {
 
 	logger.Info(fmt.Sprintf("Starting server at '%s'.", serverUri))
 
-	logMux := logging.HttpRequestLogging(logger)(mux)
-	err = http.ListenAndServe(serverUri, logMux)
+	handler := logging.HttpRequestLogging(logger)(middleware.CORS(allowedOrigin)(mux))
+	err = http.ListenAndServe(serverUri, handler)
 
 	if errors.Is(err, http.ErrServerClosed) {
 		logger.Error("Error: server closed.")
