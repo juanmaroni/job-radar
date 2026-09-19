@@ -11,6 +11,7 @@ type Job struct {
     SourceId string
     Company  string
     Role     string
+	OfferUrl string
     Score    int32
     CreatedAt time.Time
 }
@@ -19,9 +20,10 @@ var ErrInvalidSource = errors.New("no source provided")
 var ErrInvalidSourceId = errors.New("no source id provided")
 var ErrInvalidCompany = errors.New("no company provided")
 var ErrInvalidRole = errors.New("no role provided")
+var ErrInvalidOfferUrl = errors.New("no offer url provided")
 var ErrInvalidScore = errors.New("invalid score provided")
 
-func NewJob(source, sourceId, company, role string, score int32) (*Job, error) {
+func NewJob(source, sourceId, company, role, offerUrl string, score int32) (*Job, error) {
 	if source == "" {
 		return nil, ErrInvalidSource
 	}
@@ -38,6 +40,10 @@ func NewJob(source, sourceId, company, role string, score int32) (*Job, error) {
 		return nil, ErrInvalidRole
 	}
 
+	if offerUrl == "" {
+		return nil, ErrInvalidOfferUrl
+	}
+
 	if score < 0 {
 		return nil, ErrInvalidScore
 	}
@@ -47,6 +53,7 @@ func NewJob(source, sourceId, company, role string, score int32) (*Job, error) {
 		SourceId: sourceId,
 		Company: company,
 		Role: role,
+		OfferUrl: offerUrl,
 		Score: score,
 		CreatedAt: time.Now().UTC(),
 	}, nil

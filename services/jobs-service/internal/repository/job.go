@@ -23,10 +23,10 @@ func NewJobRepository(logger *slog.Logger, pool *pgxpool.Pool) *JobRepository {
 
 func (jr *JobRepository) Create(ctx context.Context, job *domain.Job) error {
     query := `
-		INSERT INTO jobs (source, source_id, company, role, score, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO jobs (source, source_id, company, role, offer_url, score, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		ON CONFLICT (source, source_id) DO UPDATE
-		SET company = EXCLUDED.company, role = EXCLUDED.role, score = EXCLUDED.score
+		SET company = EXCLUDED.company, role = EXCLUDED.role, offer_url = EXCLUDED.offer_url, score = EXCLUDED.score
 		RETURNING id;
 	`
 
@@ -46,7 +46,7 @@ func (jr *JobRepository) Create(ctx context.Context, job *domain.Job) error {
 
 func (jr *JobRepository) List(ctx context.Context) ([]domain.Job, error) {
     query := `
-		SELECT id, source, source_id, company, role, score, created_at
+		SELECT id, source, source_id, company, role, offer_url, score, created_at
 		FROM jobs
 		ORDER BY created_at DESC;
 	`
@@ -63,7 +63,7 @@ func (jr *JobRepository) List(ctx context.Context) ([]domain.Job, error) {
 
 	for rows.Next() {
 		var job domain.Job
-		err := rows.Scan(&job.Id, &job.Source, &job.SourceId, &job.Company, &job.Role, &job.Score, &job.CreatedAt)
+		err := rows.Scan(&job.Id, &job.Source, &job.SourceId, &job.Company, &job.Role, &job.OfferUrl, &job.Score, &job.CreatedAt)
 
 		if err != nil {
 			jr.logger.Error("postgres scan failed", slog.String("error", err.Error()))
