@@ -71,6 +71,7 @@ services:
       - ./services/tracker-service/migrations/0001_init.sql:/docker-entrypoint-initdb.d/0001_init.sql
       - ./services/tracker-service/migrations/0002_add_match_score.sql:/docker-entrypoint-initdb.d/0002_add_match_score.sql
       - ./services/jobs-service/migrations/0001_init.sql:/docker-entrypoint-initdb.d/0001_jobs_init.sql
+      - ./services/jobs-service/migrations/0002_add_offer_url.sql:/docker-entrypoint-initdb.d/0002_jobs_add_offer_url.sql
       - ./postgres-data:/var/lib/postgresql
   
   redis_tracker:
