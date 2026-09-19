@@ -31,7 +31,7 @@ func (jr *JobRepository) Create(ctx context.Context, job *domain.Job) error {
 	`
 
 	err := jr.pool.QueryRow(
-		ctx, query, job.Source, job.SourceId, job.Company, job.Role, job.Score, job.CreatedAt,
+		ctx, query, job.Source, job.SourceId, job.Company, job.Role, job.OfferUrl, job.Score, job.CreatedAt,
 	).Scan(&job.Id)
 
 	if err != nil {
