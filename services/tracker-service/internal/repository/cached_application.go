@@ -29,6 +29,44 @@ func NewCachedApplicationRepository(logger *slog.Logger, inner domain.Applicatio
 	}
 }
 
+func (car *CachedApplicationRepository) Create(ctx context.Context, app *domain.Application) error {
+	redisCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+	defer cancel()
+
+	err := car.inner.Create(ctx, app)
+
+	if err != nil {
+		return err
+	}
+
+	err = car.redis.Del(redisCtx, applicationsCacheKey).Err()
+
+	if err != nil {
+		car.logger.Warn("redis del failed", slog.String("key", applicationsCacheKey), slog.String("error", err.Error()))
+	}
+
+	return nil
+}
+
+func (car *CachedApplicationRepository) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
+	redisCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+	defer cancel()
+
+	err := car.inner.UpdateStatus(ctx, id, status)
+
+	if err != nil {
+		return err
+	}
+
+	err = car.redis.Del(redisCtx, applicationsCacheKey).Err()
+
+	if err != nil {
+		car.logger.Warn("redis del failed", slog.String("key", applicationsCacheKey), slog.String("error", err.Error()))
+	}
+
+	return nil
+}
+
 func (car *CachedApplicationRepository) List(ctx context.Context) ([]domain.Application, error) {
 	redisCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
 	defer cancel()
@@ -67,23 +105,4 @@ func (car *CachedApplicationRepository) List(ctx context.Context) ([]domain.Appl
 	}
 
 	return applications, nil
-}
-
-func (car *CachedApplicationRepository) Create(ctx context.Context, app *domain.Application) error {
-	redisCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
-	defer cancel()
-
-	err := car.inner.Create(ctx, app)
-
-	if err != nil {
-		return err
-	}
-
-	err = car.redis.Del(redisCtx, applicationsCacheKey).Err()
-
-	if err != nil {
-		car.logger.Warn("redis del failed", slog.String("key", applicationsCacheKey), slog.String("error", err.Error()))
-	}
-
-	return nil
 }

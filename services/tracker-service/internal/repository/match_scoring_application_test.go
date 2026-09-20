@@ -16,8 +16,9 @@ import (
 
 type fakeApplicationStore struct {
     createErr error
-    listErr   error
-    apps      []domain.Application
+	updateStatusErr error
+    listErr error
+    apps []domain.Application
 }
 
 func (f *fakeApplicationStore) Create(ctx context.Context, app *domain.Application) error {
@@ -27,6 +28,14 @@ func (f *fakeApplicationStore) Create(ctx context.Context, app *domain.Applicati
 	
     app.Id = int64(len(f.apps) + 1)
     f.apps = append(f.apps, *app)
+
+    return nil
+}
+
+func (f *fakeApplicationStore) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
+    if f.updateStatusErr != nil {
+        return f.updateStatusErr
+    }
 
     return nil
 }

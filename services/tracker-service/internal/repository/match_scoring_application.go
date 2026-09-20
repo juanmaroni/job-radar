@@ -22,10 +22,6 @@ func NewMatchScoringApplicationRepository(logger *slog.Logger, inner domain.Appl
     }
 }
 
-func (msar *MatchScoringApplicationRepository) List(ctx context.Context) ([]domain.Application, error) {
-	return msar.inner.List(ctx)
-}
-
 func (msar *MatchScoringApplicationRepository) Create(ctx context.Context, app *domain.Application) error {
 	if app.MatchScore == nil {
 		grpcCtx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
@@ -41,4 +37,12 @@ func (msar *MatchScoringApplicationRepository) Create(ctx context.Context, app *
 	}
 	
 	return msar.inner.Create(ctx, app)
+}
+
+func (msar *MatchScoringApplicationRepository) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
+	return msar.inner.UpdateStatus(ctx, id, status)
+}
+
+func (msar *MatchScoringApplicationRepository) List(ctx context.Context) ([]domain.Application, error) {
+	return msar.inner.List(ctx)
 }

@@ -2,12 +2,15 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"jobradar/tracker-service/internal/domain"
 	"log/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
+
+var ErrNotFound = errors.New("record not found")
 
 type ApplicationRepository struct {
 	logger *slog.Logger
@@ -37,6 +40,29 @@ func (ar *ApplicationRepository) Create(ctx context.Context, app *domain.Applica
 		ar.logger.Error("postgres insert failed", slog.String("error", errInsert.Error()))
 		
 		return errInsert
+	}
+
+	return nil
+}
+
+func (ar *ApplicationRepository) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
+	query := `
+		UPDATE applications 
+		SET status = $1, updated_at = now()
+		WHERE id = $3;
+	`
+
+	tag, err := ar.pool.Exec(ctx, query, status, id)
+
+	if err != nil {
+		errUpdate := fmt.Errorf("postgres update application id %d: %w", id, err)
+		ar.logger.Error("postgres insert failed", slog.String("error", errUpdate.Error()))
+		
+		return errUpdate
+	}
+
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
 	}
 
 	return nil
