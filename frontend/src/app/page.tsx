@@ -1,4 +1,5 @@
 import { Job } from "@/types/job";
+import { ApplyButton } from "@/components/ApplyButton";
 
 async function getJobs(): Promise<Job[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_JOBS_SERVICE_URL}/jobs`, { cache: "no-store" });
@@ -18,6 +19,7 @@ export default async function Home() {
         {jobs.map((job) => (
           <li key={job.Id}>
             {job.Company} — {job.Role} (score: {job.Score})
+            <ApplyButton job={job} />
           </li>
         ))}
       </ul>
