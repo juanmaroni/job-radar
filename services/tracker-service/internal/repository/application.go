@@ -57,7 +57,7 @@ func (ar *ApplicationRepository) List(ctx context.Context) ([]domain.Application
 		return nil, errSelect
 	}
 
-	var lstApplications []domain.Application
+	lstApplications := []domain.Application{}
 
 	for rows.Next() {
 		var app domain.Application
