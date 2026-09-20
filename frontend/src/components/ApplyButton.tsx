@@ -17,6 +17,7 @@ export function ApplyButton({ job }: { job: Job }) {
           company: job.Company,
           role: job.Role,
           url: job.OfferUrl,
+          matchScore: job.Score,
         }),
       });
 
