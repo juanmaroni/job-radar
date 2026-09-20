@@ -10,8 +10,9 @@ import (
 
 type createApplicationRequest struct {
     Company string `json:"company"`
-    Role    string `json:"role"`
-    URL     string `json:"url"`
+    Role string `json:"role"`
+    URL string `json:"url"`
+	MatchScore *int32 `json:"matchScore"`
 }
 
 type ApplicationHandler struct {
@@ -36,7 +37,7 @@ func (ah *ApplicationHandler) CreateApplication(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	application, err := domain.NewApplication(applicationReq.Company, applicationReq.Role, applicationReq.URL)
+	application, err := domain.NewApplication(applicationReq.Company, applicationReq.Role, applicationReq.URL, applicationReq.MatchScore)
 
 	if err != nil {
 		ah.logger.Warn(responses.UnprocessableEntityHandler(w, r))

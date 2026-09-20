@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewApplication_ValidInput(t *testing.T) {
-    app, err := NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1")
+    app, err := NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1", nil)
 
     require.NoError(t, err)
     require.NotNil(t, app)
@@ -24,19 +24,20 @@ func TestNewApplication_ValidInput(t *testing.T) {
 
 func TestNewApplication_Validation(t *testing.T) {
     cases := []struct {
-        name    string
+        name string
         company string
-        role    string
+        role string
+		matchScore *int32
         wantErr error
     } {
-		{"valid application", "Acme", "Backend Engineer", nil},
-        {"empty company", "", "Backend Engineer", ErrInvalidCompany},
-        {"empty role", "Acme", "", ErrInvalidRole},
+		{"valid application", "Acme", "Backend Engineer", nil, nil},
+        {"empty company", "", "Backend Engineer", nil, ErrInvalidCompany},
+        {"empty role", "Acme", "", nil, ErrInvalidRole},
     }
 
     for _, c := range cases {
         t.Run(c.name, func(t *testing.T) {
-            _, err := NewApplication(c.company, c.role, "https://example.com")
+            _, err := NewApplication(c.company, c.role, "https://example.com", nil)
 			assert.ErrorIs(t, err, c.wantErr)
         })
     }

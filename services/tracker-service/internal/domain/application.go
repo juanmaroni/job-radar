@@ -32,7 +32,7 @@ type Application struct {
 	UpdatedAt time.Time
 }
 
-func NewApplication(company, role, url string) (*Application, error) {
+func NewApplication(company, role, url string, matchScore *int32) (*Application, error) {
 	if company == "" {
 		return nil, ErrInvalidCompany
 	} else if role == "" {
@@ -46,6 +46,7 @@ func NewApplication(company, role, url string) (*Application, error) {
 		Role: role,
 		OfferUrl: url,
 		Status: StatusApplied,
+		MatchScore: matchScore,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}, nil

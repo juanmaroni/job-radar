@@ -65,7 +65,7 @@ func TestCreate_MatchingSuccess(t *testing.T) {
         fakeGrpc,
     )
 
-    app, _ := domain.NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1")
+    app, _ := domain.NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1", nil)
 
     err := repo.Create(context.Background(), app)
 
@@ -87,7 +87,7 @@ func TestCreate_MatchingFail(t *testing.T) {
         fakeGrpc,
     )
 
-    app, _ := domain.NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1")
+    app, _ := domain.NewApplication("Acme", "Backend Engineer", "https://acme.com/jobs/1", nil)
     
 	err := repo.Create(context.Background(), app)
 
