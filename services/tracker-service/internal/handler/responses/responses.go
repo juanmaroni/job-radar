@@ -16,6 +16,13 @@ func CreatedHandler(w http.ResponseWriter, r *http.Request, contentType string, 
 	return message
 }
 
+func NoContentHandler(w http.ResponseWriter, r *http.Request) string {
+	var message string = "204 No Content"
+	buildResponse(w, http.StatusNoContent, message, "", nil)
+
+	return message
+}
+
 func BadRequestHandler(w http.ResponseWriter, r *http.Request) string {
 	var message string = "400 Bad Request"
 	buildResponse(w, http.StatusBadRequest, message, "", nil)

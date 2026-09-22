@@ -104,6 +104,7 @@ func main() {
 	mux.Handle("GET /health", health.NewHealthHandler(logger))
 	mux.HandleFunc("POST /applications", appHandler.CreateApplication)
 	mux.HandleFunc("GET /applications", appHandler.ListApplications)
+	mux.HandleFunc("PATCH /applications/{id}", appHandler.UpdateStatusApplication)
 
 	logger.Info(fmt.Sprintf("Starting server at '%s'.", serverUri))
 

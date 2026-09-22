@@ -5,6 +5,7 @@ import (
 	"encoding/json/v2"
 	"errors"
 	"jobradar/tracker-service/internal/domain"
+	"jobradar/tracker-service/internal/repository"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -18,6 +19,7 @@ import (
 
 type fakeApplicationStore struct {
     createErr error
+	updateStatusErr error
     listErr error
     apps []domain.Application
 }
@@ -33,6 +35,14 @@ func (f *fakeApplicationStore) Create(ctx context.Context, app *domain.Applicati
     return nil
 }
 
+func (f *fakeApplicationStore) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
+    if f.updateStatusErr != nil {
+        return f.updateStatusErr
+    }
+
+    return nil
+}
+
 func (f *fakeApplicationStore) List(ctx context.Context) ([]domain.Application, error) {
     if f.listErr != nil {
         return nil, f.listErr
@@ -42,7 +52,7 @@ func (f *fakeApplicationStore) List(ctx context.Context) ([]domain.Application, 
 }
 
 func TestCreateApplication_ValidBody(t *testing.T) {
-	body := strings.NewReader(`{"company":"Acme","role":"Backend Engineer","url":"https://acme.com/jobs/1"}`)
+	body := strings.NewReader(`{"company": "Acme","role": "Backend Engineer","url": "https://acme.com/jobs/1"}`)
 	req := httptest.NewRequest(http.MethodPost, "/applications", body)
 	rec := httptest.NewRecorder()
 
@@ -50,6 +60,7 @@ func TestCreateApplication_ValidBody(t *testing.T) {
 		slog.New(slog.DiscardHandler),
 		&fakeApplicationStore{
 			createErr: nil,
+			updateStatusErr: nil,
 			listErr: nil,
 			apps: []domain.Application{},
 		},
@@ -69,7 +80,7 @@ func TestCreateApplication_ValidBody(t *testing.T) {
 }
 
 func TestCreateApplication_InvalidBody(t *testing.T) {
-	body := strings.NewReader(`{company":"Acme","role":"Backend Engineer","url":"https://acme.com/jobs/1"}`)
+	body := strings.NewReader(`{company": "Acme","role": "Backend Engineer","url": "https://acme.com/jobs/1"}`)
 	req := httptest.NewRequest(http.MethodPost, "/applications", body)
 	rec := httptest.NewRecorder()
 
@@ -77,6 +88,7 @@ func TestCreateApplication_InvalidBody(t *testing.T) {
 		slog.New(slog.DiscardHandler),
 		&fakeApplicationStore{
 			createErr: nil,
+			updateStatusErr: nil,
 			listErr: nil,
 			apps: []domain.Application{},
 		},
@@ -92,7 +104,7 @@ func TestCreateApplication_InvalidBody(t *testing.T) {
 }
 
 func TestCreateApplication_EmptyCompany(t *testing.T) {
-	body := strings.NewReader(`{"company":"","role":"Backend Engineer","url":"https://acme.com/jobs/1"}`)
+	body := strings.NewReader(`{"company": "","role": "Backend Engineer","url": "https://acme.com/jobs/1"}`)
 	req := httptest.NewRequest(http.MethodPost, "/applications", body)
 	rec := httptest.NewRecorder()
 
@@ -115,7 +127,7 @@ func TestCreateApplication_EmptyCompany(t *testing.T) {
 }
 
 func TestCreateApplication_CreateError(t *testing.T) {
-	body := strings.NewReader(`{"company":"Acme","role":"Backend Engineer","url":"https://acme.com/jobs/1"}`)
+	body := strings.NewReader(`{"company": "Acme","role": "Backend Engineer","url": "https://acme.com/jobs/1"}`)
 	req := httptest.NewRequest(http.MethodPost, "/applications", body)
 	rec := httptest.NewRecorder()
 
@@ -130,6 +142,86 @@ func TestCreateApplication_CreateError(t *testing.T) {
 	handler.CreateApplication(rec, req)
 
 	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+}
+
+func TestUpdateStatusApplication_ValidBody(t *testing.T) {
+	body := strings.NewReader(`{"status": "interview"}`)
+	req := httptest.NewRequest(http.MethodPatch, "/applications/1", body)
+	req.SetPathValue("id", "1")
+	rec := httptest.NewRecorder()
+
+	handler := NewApplicationHandler(
+		slog.New(slog.DiscardHandler),
+		&fakeApplicationStore{
+			createErr: nil,
+			updateStatusErr: nil,
+			listErr: nil,
+			apps: []domain.Application{},
+		},
+	)
+	handler.UpdateStatusApplication(rec, req)
+
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+}
+
+func TestUpdateStatusApplication_InvalidId(t *testing.T) {
+	body := strings.NewReader(`{"status": "interview"}`)
+	req := httptest.NewRequest(http.MethodPatch, "/applications/invalid", body)
+	req.SetPathValue("id", "invalid")
+	rec := httptest.NewRecorder()
+
+	handler := NewApplicationHandler(
+		slog.New(slog.DiscardHandler),
+		&fakeApplicationStore{
+			createErr: nil,
+			updateStatusErr: nil,
+			listErr: nil,
+			apps: []domain.Application{},
+		},
+	)
+	handler.UpdateStatusApplication(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+}
+
+func TestUpdateStatusApplication_InvalidStatus(t *testing.T) {
+	body := strings.NewReader(`{"status": "invalid"}`)
+	req := httptest.NewRequest(http.MethodPatch, "/applications/1", body)
+	req.SetPathValue("id", "1")
+	rec := httptest.NewRecorder()
+
+	handler := NewApplicationHandler(
+		slog.New(slog.DiscardHandler),
+		&fakeApplicationStore{
+			createErr: nil,
+			updateStatusErr: nil,
+			listErr: nil,
+			apps: []domain.Application{},
+		},
+	)
+	handler.UpdateStatusApplication(rec, req)
+
+	assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+}
+
+func TestUpdateStatusApplication_ErrNotFound(t *testing.T) {
+	body := strings.NewReader(`{"status": "interview"}`)
+	req := httptest.NewRequest(http.MethodPatch, "/applications/1", body)
+	req.SetPathValue("id", "1")
+	rec := httptest.NewRecorder()
+
+	handler := NewApplicationHandler(
+		slog.New(slog.DiscardHandler),
+		&fakeApplicationStore{
+			createErr: nil,
+			updateStatusErr: repository.ErrNotFound,
+			listErr: nil,
+			apps: []domain.Application{},
+		},
+	)
+	handler.UpdateStatusApplication(rec, req)
+
+	assert.Equal(t, http.StatusNotFound, rec.Code)
 }
 
 func TestListApplications_Valid(t *testing.T) {
