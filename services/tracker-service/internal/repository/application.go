@@ -48,8 +48,8 @@ func (ar *ApplicationRepository) Create(ctx context.Context, app *domain.Applica
 func (ar *ApplicationRepository) UpdateStatus(ctx context.Context, id int64, status domain.Status) error {
 	query := `
 		UPDATE applications 
-		SET status = $1, updated_at = now()
-		WHERE id = $3;
+		SET status = $1::status_type, updated_at = now()
+		WHERE id = $2;
 	`
 
 	tag, err := ar.pool.Exec(ctx, query, status, id)
