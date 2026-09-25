@@ -32,8 +32,8 @@ export function StatusButtons({ application }: { application: Application }) {
   return (
     <div>
       {STATUSES.filter((s) => s !== currentStatus).map((s) => (
-        <button key={s} onClick={() => handleClick(s)} disabled={loading}>
-          Mover a {s}
+        <button key={s} onClick={() => handleClick(s)} disabled={loading} className="text-xs px-2 py-1 bg-blue-500 text-white rounded m-2 cursor-pointer">
+          Move to {s}
         </button>
       ))}
     </div>
