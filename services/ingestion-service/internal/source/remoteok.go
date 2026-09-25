@@ -7,7 +7,10 @@ import (
 	"jobradar/ingestion-service/internal/domain"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
+
+	"golang.org/x/text/encoding/charmap"
 )
 
 const RemoteOkApiUrl = "https://remoteok.com/api"
@@ -110,7 +113,18 @@ func (roks *RemoteOKSource) FetchJobs(ctx context.Context) ([]domain.Job, error)
 		}
 
 		// Construct job
-		job, err := domain.NewJob("RemoteOK", jsonJob.ID, jsonJob.Company, jsonJob.Position, jsonJob.URL, jsonJob.Location, jsonJob.Description, salaryMin, salaryMax, publishedAt)
+		job, err := domain.NewJob(
+			"RemoteOK",
+			jsonJob.ID,
+			normalizeText(jsonJob.Company),
+			normalizeText(jsonJob.Position),
+			jsonJob.URL,
+			normalizeText(jsonJob.Location),
+			normalizeText(jsonJob.Description),
+			salaryMin,
+			salaryMax,
+			publishedAt,
+		)
 
 		if err != nil {
 			roks.logger.Warn("failed to construct job struct", slog.String("error", err.Error()))
@@ -121,4 +135,25 @@ func (roks *RemoteOKSource) FetchJobs(ctx context.Context) ([]domain.Job, error)
 	}
 
 	return jobs, nil
+}
+
+func fixMojibake(w string) string {
+	latin1Encoder := charmap.ISO8859_1.NewEncoder()
+	bytes, err := latin1Encoder.Bytes([]byte(w))
+	
+	if err != nil {
+		return w
+	}
+
+	return string(bytes)
+}
+
+func normalizeText(s string) string {
+	normalizeWords := []string{}
+
+	for _, w := range strings.Split(s, " ") {
+		normalizeWords = append(normalizeWords, fixMojibake(w))
+	}
+
+	return strings.Join(normalizeWords, " ")
 }

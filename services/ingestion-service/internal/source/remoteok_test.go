@@ -85,3 +85,19 @@ func TestFetchJobs_HttpError(t *testing.T) {
 
     assert.Error(t, err)
 }
+
+func TestFixMojibake_Error(t *testing.T) {
+	s := "Mec\u00c3\u00a1nico Automotriz Diagn\u00c3\u00b3stico y Presupuestos 🚀"
+
+	fix := fixMojibake(s)
+
+	assert.Equal(t, s, fix)
+}
+
+func TestNormalizeWords(t *testing.T) {
+	s := "Mec\u00c3\u00a1nico Automotriz Diagn\u00c3\u00b3stico y Presupuestos"
+
+	fix := normalizeText(s)
+
+	assert.Equal(t, "Mecánico Automotriz Diagnóstico y Presupuestos", fix)
+}

@@ -5,6 +5,7 @@ go 1.27.0
 require (
 	github.com/segmentio/kafka-go v0.4.51
 	github.com/stretchr/testify v1.8.0
+	golang.org/x/text v0.23.0
 	jobradar/events v0.0.0
 )
 
