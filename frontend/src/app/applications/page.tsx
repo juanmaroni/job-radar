@@ -1,6 +1,7 @@
 import { Application } from "@/types/application";
 import { StatusButtons } from "@/components/StatusButton";
 import { PageTitle } from "@/components/PageTitle";
+import { groupByStatus } from "@/lib/applications";
 
 async function getApplications(): Promise<Application[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_TRACKER_SERVICE_URL}/applications`, { cache: "no-store" });
@@ -10,20 +11,6 @@ async function getApplications(): Promise<Application[]> {
   }
 
   return res.json();
-}
-
-function groupByStatus(applications: Application[]): Record<string, Application[]> {
-  return applications.reduce((groups, app) => {
-    const status = app.Status;
-    
-    if (!groups[status]) {
-      groups[status] = [];
-    }
-    
-    groups[status].push(app);
-
-    return groups;
-  }, {} as Record<string, Application[]>);
 }
 
 export default async function Home() {
