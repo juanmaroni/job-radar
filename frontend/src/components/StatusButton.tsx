@@ -5,8 +5,7 @@ import { Application } from "@/types/application";
 
 const STATUSES = ["applied", "interview", "offer", "rejected"];
 
-export function StatusButtons({ application }: { application: Application }) {
-  const [currentStatus, setCurrentStatus] = useState(application.Status);
+export function StatusButtons({ application, onStatusChange }: { application: Application; onStatusChange: (id: number, status: string) => void }) {
   const [loading, setLoading] = useState(false);
 
   async function handleClick(newStatus: string) {
@@ -23,7 +22,7 @@ export function StatusButtons({ application }: { application: Application }) {
         throw new Error("Failed to update status");
       }
 
-      setCurrentStatus(newStatus);
+      onStatusChange(application.Id, newStatus);
     } finally {
       setLoading(false);
     }
@@ -31,7 +30,7 @@ export function StatusButtons({ application }: { application: Application }) {
 
   return (
     <div>
-      {STATUSES.filter((s) => s !== currentStatus).map((s) => (
+      {STATUSES.filter((s) => s !== application.Status).map((s) => (
         <button key={s} onClick={() => handleClick(s)} disabled={loading} className="text-xs px-2 py-1 bg-blue-500 text-white rounded m-2 cursor-pointer">
           Move to {s}
         </button>
