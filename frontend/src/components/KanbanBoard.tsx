@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { Application } from "@/types/application";
 import { groupByStatus } from "@/lib/applications";
-import { StatusButtons } from "./StatusButton";
+import { KanbanColumn } from "./KanbanColumn";
+import { KanbanCard } from "./KanbanCard";
 
 const STATUSES = ["applied", "interview", "offer", "rejected"];
 
@@ -16,22 +18,30 @@ export function KanbanBoard({ initialApplications }: { initialApplications: Appl
     );
   }
 
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const id = Number(active.id);
+    const newStatus = over.id.toString();
+
+    handleStatusChange(id, newStatus);
+  }
+
   const grouped = groupByStatus(applications);
 
   return (
-    <div className="flex gap-4">
-      {STATUSES.map((status) => (
-        <div key={status}>
-          <h2>{status}</h2>
-          {(grouped[status] ?? []).map((app) => (
-            <div key={app.Id} className="bg-white rounded p-3 m-3 shadow">
-              <p className="font-medium text-black">{app.Role}</p>
-              <p className="text-sm text-gray-500">{app.Company}</p>
-              <StatusButtons application={app} onStatusChange={handleStatusChange}  />
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="flex gap-4">
+        {STATUSES.map((status) => (
+          <KanbanColumn key={status} status={status}>
+            {(grouped[status] ?? []).map((app) => (
+              <KanbanCard key={app.Id} application={app} onStatusChange={handleStatusChange} />
+            ))}
+          </KanbanColumn>
+        ))}
+      </div>
+    </DndContext>
   );
 }
