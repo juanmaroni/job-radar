@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { Application } from "@/types/application";
-import { groupByStatus } from "@/lib/applications";
+import { groupByStatus, updateApplicationStatus } from "@/lib/applications";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCard } from "./KanbanCard";
 
@@ -18,13 +18,22 @@ export function KanbanBoard({ initialApplications }: { initialApplications: Appl
     );
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (!over) return;
 
     const id = Number(active.id);
     const newStatus = over.id.toString();
+
+    if (applications.find(app => app.Id === id && app.Status === newStatus)) return;
+
+    try {
+      await updateApplicationStatus(id, newStatus);
+    } catch(e) {
+      console.error(e)
+      return
+    }
 
     handleStatusChange(id, newStatus);
   }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Application } from "@/types/application";
+import { updateApplicationStatus } from "@/lib/applications";
 
 const STATUSES = ["applied", "interview", "offer", "rejected"];
 
@@ -12,17 +13,10 @@ export function StatusButtons({ application, onStatusChange }: { application: Ap
     setLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_TRACKER_SERVICE_URL}/applications/${application.Id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to update status");
-      }
-
+      await updateApplicationStatus(application.Id, newStatus)
       onStatusChange(application.Id, newStatus);
+    } catch(e) {
+        console.error(e)
     } finally {
       setLoading(false);
     }
