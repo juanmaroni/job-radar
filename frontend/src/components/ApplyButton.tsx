@@ -32,11 +32,15 @@ export function ApplyButton({ job }: { job: Job }) {
   }
 
   return (
-    <button onClick={handleClick} disabled={status === "loading" || status === "done"} className="text-xs px-2 py-1 bg-blue-500 text-white rounded m-2 cursor-pointer">
-      {status === "idle" && "Aplicar"}
-      {status === "loading" && "Aplicando..."}
-      {status === "done" && "Aplicado ✓"}
-      {status === "error" && "Error, reintentar"}
+    <button
+      onClick={handleClick}
+      disabled={status === "loading" || status === "done"}
+      className="text-md px-2 py-1 bg-green-500 text-white rounded w-50 h-10 m-2 cursor-pointer"
+    >
+      {status === "idle" && "I applied"}
+      {status === "loading" && "Saving..."}
+      {status === "done" && "Applied!"}
+      {status === "error" && "Error, retry"}
     </button>
   );
 }
