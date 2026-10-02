@@ -5,6 +5,10 @@ export interface Job {
   Company: string;
   Role: string;
   OfferUrl: string;
+  Location: string
+  SalaryMin: number;
+  SalaryMax: number;
+  Description: string;
   Score: number;
-  CreatedAt: string;
+  PublishedAt: string;
 }
