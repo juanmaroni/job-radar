@@ -8,6 +8,7 @@ CREATE TABLE applications (
     role VARCHAR(64) NOT NULL,
     offer_url VARCHAR(255) NOT NULL,
     status status_type NOT NULL,
+    match_score INTEGER,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
