@@ -37,7 +37,19 @@ func (c *Consumer) Run(ctx context.Context) error {
 			continue
 		}
 
-		job, err := domain.NewJob(jobMatched.Source, jobMatched.SourceId, jobMatched.Company, jobMatched.Role, jobMatched.OfferUrl, jobMatched.Score)
+		job, err := domain.NewJob(
+			jobMatched.Source,
+			jobMatched.SourceId,
+			jobMatched.Company,
+			jobMatched.Role,
+			jobMatched.OfferUrl,
+			jobMatched.Location,
+			jobMatched.Description,
+			jobMatched.Score,
+			jobMatched.SalaryMin,
+			jobMatched.SalaryMax,
+			jobMatched.PublishedAt,
+		)
 
 		if err != nil {
 			c.logger.Error("job construction failed", slog.String("error", err.Error()))

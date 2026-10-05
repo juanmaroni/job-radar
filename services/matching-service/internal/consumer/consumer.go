@@ -49,7 +49,12 @@ func (c *Consumer) Run(ctx context.Context) error {
 			Company: jobPublished.Company,
 			Role: jobPublished.Role,
 			OfferUrl: jobPublished.OfferUrl,
+			Location: jobPublished.Location,
+			SalaryMin: jobPublished.SalaryMin,
+			SalaryMax: jobPublished.SalaryMax,
+			Description: jobPublished.Description,
 			Score: score,
+			PublishedAt: jobPublished.PublishedAt,
 		}
 
 		jsonJobMatched, err := json.Marshal(&jobMatched)
