@@ -29,7 +29,11 @@ func (kjp *KafkaJobPublisher) Publish(ctx context.Context, job domain.Job) error
 		Company: job.Company,
 		Role: job.Role,
 		OfferUrl: job.OfferUrl,
+		Location: job.Location,
+		SalaryMin: job.SalaryMin,
+		SalaryMax: job.SalaryMax,
 		Description: job.Description,
+		PublishedAt: job.PublishedAt,
 	}
 
 	jsonJobPublished, err := json.Marshal(jobPublished)
