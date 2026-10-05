@@ -3,6 +3,7 @@
 import { Job } from "@/types/job";
 import { scoreColor } from "@/lib/utils";
 import { ApplyButton } from "./ApplyButton";
+import DOMPurify from "dompurify";
 
 export function JobInfoCard({ job }: { job: Job | null }) {
   if (job === null) return null;
@@ -15,7 +16,7 @@ export function JobInfoCard({ job }: { job: Job | null }) {
       <p className="text-sm text-black">📍 {job.Location}</p>
       <p className="text-sm text-black">📅 {job.PublishedAt}</p>
       <p className="text-sm text-black">💰 {job.SalaryMin} - {job.SalaryMax}</p>
-      <p className="text-sm text-black">{job.Description}</p>
+      <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
       <div className="flex">
         <button className="text-md text-center px-2 py-1 bg-blue-500  rounded w-50 h-10 m-2 cursor-pointer">
             <a href={job.OfferUrl} target="_blank">Apply</a>
