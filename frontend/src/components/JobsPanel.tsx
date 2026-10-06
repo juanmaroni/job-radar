@@ -9,15 +9,15 @@ export function JobsPanel({ jobs }: {jobs: Job[]}) {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
 
   return (
-    <div className="flex gap-2 screen">
-      <div className="flex flex-wrap gap-4 justify-flex-start flex-1 w-1/3 h-full">
+    <div className="flex gap-2">
+      <div className="flex flex-wrap gap-4 justify-flex-start flex-1">
         {jobs.map((job) => (
           <div key={job.Id}>
             <JobResumeCard job={job} onSelect={setSelectedJob} />
           </div>
         ))}
       </div>
-      <div className="h-full w-1/3 fixed right-0">
+      <div className="w-1/3">
         {selectedJob && 
         <JobInfoCard job={selectedJob} />
         }
