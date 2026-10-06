@@ -7,6 +7,7 @@ export const theme = {
   scoreMedium: "bg-amber-600",
   scoreHigh: "bg-emerald-600",
   buttonJobDescription: "text-md rounded w-50 h-10 cursor-pointer",
+  spanJobsInfoElems: "text-center w-10 shrink-0",
   buttonJobLink: "bg-blue-600 hover:bg-blue-500 text-white",
   buttonJobApply: "bg-emerald-600 hover:bg-emerald-500 text-white",
   kanbanColumnBg: "bg-zinc-800",
