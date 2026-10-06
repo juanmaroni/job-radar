@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Job } from "@/types/job";
+import { theme } from "@/lib/theme";
 
 export function ApplyButton({ job }: { job: Job }) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -35,7 +36,7 @@ export function ApplyButton({ job }: { job: Job }) {
     <button
       onClick={handleClick}
       disabled={status === "loading" || status === "done"}
-      className="text-md px-2 py-1 bg-green-500 text-white rounded w-50 h-10 m-2 cursor-pointer"
+      className={`${theme.buttonJobApply} ${theme.buttonJobDescription}`}
     >
       {status === "idle" && "I applied"}
       {status === "loading" && "Saving..."}
