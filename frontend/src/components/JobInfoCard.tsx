@@ -3,23 +3,26 @@
 import { Job } from "@/types/job";
 import { scoreColor } from "@/lib/utils";
 import { ApplyButton } from "./ApplyButton";
+import { theme } from "@/lib/theme";
 import DOMPurify from "dompurify";
 
 export function JobInfoCard({ job }: { job: Job | null }) {
   if (job === null) return null;
 
   return (
-    <div className={`${scoreColor(job.Score)} h-full p-5 rounded-md align-middle`}>
-      <h2 className="font-medium text-black">{job.Role}</h2>
-      <h3 className="text-sm text-black">{job.Company}</h3>
-      <p className="text-sm text-black">🎯 {job.Score}</p>
-      <p className="text-sm text-black">📍 {job.Location}</p>
-      <p className="text-sm text-black">📅 {job.PublishedAt}</p>
-      <p className="text-sm text-black">💰 {job.SalaryMin} - {job.SalaryMax}</p>
-      <div className="text-sm text-black" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
-      <div className="flex">
-        <button className="text-md text-center px-2 py-1 bg-blue-500  rounded w-50 h-10 m-2 cursor-pointer">
-            <a href={job.OfferUrl} target="_blank">Apply</a>
+    <div className={`${scoreColor(job.Score)} p-5 rounded-md align-middle fixed h-[90%] overflow-y-auto mr-8`}>
+      <p className="text-2xl">{job.Role}</p>
+      <p className="text-xl">{job.Company}</p>
+      <div className="p-2 text-md">
+        <p>🎯 {job.Score}</p>
+        <p>📍 {job.Location}</p>
+        <p>📅 {job.PublishedAt}</p>
+        <p>💰 {job.SalaryMin} - {job.SalaryMax}</p>
+      </div>
+      <div className="text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
+      <div className="flex justify-center gap-2 m-10">
+        <button className={`${theme.buttonJobLink} ${theme.buttonJobDescription}`}>
+          <a href={job.OfferUrl} target="_blank">Apply</a>
         </button>
         <ApplyButton job={job} />
       </div>
