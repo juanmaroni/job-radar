@@ -9,7 +9,7 @@ export function KanbanColumn({ status, children}: { status: string, children: Re
 
   return(
     <div ref={setNodeRef} className={`flex-1 ${statusColor(status)} rounded-md p-4 ${isOver ? "bg-gray-200" : ""}`}>
-      <h2 className="font-semibold mb-3 capitalize text-black">{status}</h2>
+      <h2 className="font-semibold mb-3 capitalize">{status}</h2>
       <div className="flex flex-col gap-2">{children}</div>
     </div>
   );

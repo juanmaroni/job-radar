@@ -23,9 +23,9 @@ export function KanbanCard({
   return (
     <div ref={setNodeRef} style={style} className={`${scoreColor(application.MatchScore)} rounded p-3`}>
       <div {...listeners} {...attributes} className="cursor-grab">
-        <p className="font-medium text-black">{application.Role}</p>
-        <p className="text-sm text-black">{application.Company}</p>
-        <p className="text-sm text-black">🎯 {application.MatchScore}</p>
+        <p className="font-medium">{application.Role}</p>
+        <p className="text-sm">{application.Company}</p>
+        <p className="text-sm">🎯 {application.MatchScore}</p>
       </div>
       <StatusButtons application={application} onStatusChange={onStatusChange} />
     </div>
