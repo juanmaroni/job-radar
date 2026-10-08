@@ -6,6 +6,7 @@ import (
 	"jobradar/jobs-service/internal/handler/responses"
 	"log/slog"
 	"net/http"
+	"strconv"
 )
 
 type JobHandler struct {
@@ -21,7 +22,22 @@ func NewJobHandler(logger *slog.Logger, store domain.JobStore) *JobHandler {
 }
 
 func (jh *JobHandler) ListJobs(w http.ResponseWriter, r *http.Request) {
-	lstJobs, err := jh.store.List(r.Context())
+	var days *int
+	daysQuery := r.URL.Query().Get("days")
+
+	if daysQuery != "" {
+		daysParsed, err := strconv.Atoi(daysQuery)
+
+		if err != nil || daysParsed <= 0 {
+			days = nil
+		} else {
+			days = &daysParsed
+		}
+	}
+
+	filters := domain.JobFilters{Days: days}
+
+	lstJobs, err := jh.store.List(r.Context(), filters)
 
 	if err != nil {
 		jh.logger.Error(responses.InternalServerErrorHandler(w, r))
