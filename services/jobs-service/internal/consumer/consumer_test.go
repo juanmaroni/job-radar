@@ -50,7 +50,7 @@ func (f *fakeJobStore) Create(ctx context.Context, job *domain.Job) error {
 	return nil
 }
 
-func (f *fakeJobStore) List(ctx context.Context) ([]domain.Job, error) {
+func (f *fakeJobStore) List(ctx context.Context, filters domain.JobFilters) ([]domain.Job, error) {
 	if f.listErr != nil {
 		return nil, f.listErr
 	}
