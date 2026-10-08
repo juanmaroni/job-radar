@@ -59,13 +59,22 @@ func (jr *JobRepository) Create(ctx context.Context, job *domain.Job) error {
 	return nil
 }
 
-func (jr *JobRepository) List(ctx context.Context) ([]domain.Job, error) {
+func (jr *JobRepository) List(ctx context.Context, filters domain.JobFilters) ([]domain.Job, error) {
+	var whereClause string = ""
+	var args []any
+
+	if filters.Days != nil {
+		whereClause = `WHERE published_at >= now() - make_interval(days => $1)`
+		args = append(args, filters.Days)
+	}
+
     query := `
 		SELECT id, source, source_id, company, role, offer_url, location, salary_min, salary_max, description, score, published_at, created_at
-		FROM jobs
-		ORDER BY created_at DESC;
+		FROM jobs ` +
+		whereClause +
+		` ORDER BY created_at DESC;
 	`
-	rows, err := jr.pool.Query(ctx, query)
+	rows, err := jr.pool.Query(ctx, query, args...)
 
 	if err != nil {
 		errSelect := fmt.Errorf("select jobs: %w", err)
