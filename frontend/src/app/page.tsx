@@ -4,7 +4,7 @@ import { JobsPanel } from "@/components/JobsPanel";
 import { theme } from "@/lib/theme";
 
 async function getJobs(): Promise<Job[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_JOBS_SERVICE_URL}/jobs`, { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_JOBS_SERVICE_URL}/jobs?days=30`, { cache: "no-store" });
   
   if (!res.ok) {
     throw new Error("Failed to fetch jobs");
