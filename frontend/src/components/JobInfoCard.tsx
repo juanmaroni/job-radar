@@ -9,7 +9,7 @@ export function JobInfoCard({ job }: { job: Job | null }) {
   if (job === null) return null;
 
   return (
-    <div className={`border-2 border-white bg-zinc-800 p-5 rounded-md align-middle fixed h-[90%] overflow-y-auto mr-8`}>
+    <div className={`border-2 border-white bg-zinc-800 p-5 rounded-md align-middle fixed h-[80%] overflow-y-auto mr-8`}>
       <p className="text-2xl">{job.Role}</p>
       <p className="text-xl">{job.Company}</p>
       <div className="flex flex-col gap-1 mt-10 text-md h-40">
