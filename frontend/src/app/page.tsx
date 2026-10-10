@@ -23,7 +23,7 @@ async function getJobs(days: string): Promise<Job[]> {
 export default async function Home({ searchParams }: {searchParams: Promise<{ days?: string }>}) {
   let days = (await searchParams).days;
 
-  if (days === undefined || (days !== "all" && +days <= 0)) {
+  if (days === undefined || days !== "all" && !(+days > 0)) {
     days = "30";
   }
 
