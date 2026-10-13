@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Job } from "@/types/job";
+import { DaysSelect } from "@/components/DaysSelect";
 import { JobResumeCard } from "./JobResumeCard";
 import { JobInfoCard } from "./JobInfoCard";
 import DOMPurify from "dompurify";
 
-export function JobsPanel({ jobs }: {jobs: Job[]; days: string}) {
+export function JobsPanel({ jobs, days }: {jobs: Job[]; days: string}) {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchText, setSearchText] = useState<string>("");
 
@@ -36,6 +37,7 @@ export function JobsPanel({ jobs }: {jobs: Job[]; days: string}) {
   return (
     <div>
       <div className="flex gap-4">
+        <DaysSelect current={days} /> 
         <input
           className="mb-4 p-2 border-2 rounded-md"
           type="text"

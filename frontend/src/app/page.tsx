@@ -1,6 +1,5 @@
 import { Job } from "@/types/job";
 import { PageTitle } from "@/components/PageTitle";
-import { DaysSelect } from "@/components/DaysSelect";
 import { JobsPanel } from "@/components/JobsPanel";
 import { theme } from "@/lib/theme";
 
@@ -32,8 +31,7 @@ export default async function Home({ searchParams }: {searchParams: Promise<{ da
   return (
     <main className={`p-8 ${theme.background} ${theme.text}`}>
       <PageTitle title="Jobs" />
-      <DaysSelect current={days} />
-      {jobs !== null && <JobsPanel jobs={jobs} key={days} />}
+      <JobsPanel jobs={jobs} days={days} key={days} />
     </main>
   );
 }
