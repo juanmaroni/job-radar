@@ -17,11 +17,11 @@ export function JobInfoCard({ job }: { job: Job | null }) {
           <span className={`${theme.spanJobsInfoElems}`}>🎯</span>
           <span>{job.Score}</span>
         </p>
-        <p className="flex">
+        <p className="flex" hidden={job.Location === ""}>
           <span className={`${theme.spanJobsInfoElems}`}>📍</span>
           <span>{job.Location}</span>
         </p>
-        <p className="flex">
+        <p className="flex" hidden={job.PublishedAt === ""}>
           <span className={`${theme.spanJobsInfoElems}`}>📅</span>
           <span>{job.PublishedAt.split("T")[0]}</span>
         </p>
@@ -30,7 +30,7 @@ export function JobInfoCard({ job }: { job: Job | null }) {
           <span>{job.SalaryMin} - {job.SalaryMax}</span>
         </p>
       </div>
-      <div className="text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
+      <div className={`text-sm **:${theme.text}!`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
       <div className="flex justify-center gap-2 m-10">
         <button className={`${theme.buttonJobLink} ${theme.buttonJobDescription}`}>
           <a href={job.OfferUrl} target="_blank">Apply</a>
