@@ -50,16 +50,16 @@ export function JobsPanel({ jobs, days }: {jobs: Job[]; days: string}) {
         <div className="flex flex-wrap gap-4 justify-flex-start flex-1">
           {filteredJobs.map((job) => (
             <div key={job.Id}>
-              <JobResumeCard job={job} onSelect={setSelectedJob} />
-          </div>
-        ))}
-      </div>
+              <JobResumeCard job={job} query={searchText} onSelect={setSelectedJob} />
+            </div>
+          ))}
+        </div>
         <div className="w-1/3">
           {selectedJob && 
-          <JobInfoCard job={selectedJob} />
+          <JobInfoCard job={selectedJob} query={searchText} />
           }
         </div>
       </div>
     </div>
-  )
+  );
 }

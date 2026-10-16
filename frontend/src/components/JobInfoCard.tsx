@@ -2,16 +2,18 @@
 
 import { Job } from "@/types/job";
 import { ApplyButton } from "./ApplyButton";
+import { HighlightText } from "./HighlightText";
+import { highlightHtml } from "@/lib/highlight";
 import { theme } from "@/lib/theme";
 import DOMPurify from "dompurify";
 
-export function JobInfoCard({ job }: { job: Job | null }) {
+export function JobInfoCard({ job, query }: { job: Job | null; query: string }) {
   if (job === null) return null;
 
   return (
     <div className={`border-2 border-white bg-zinc-800 p-5 rounded-md align-middle fixed h-[80%] overflow-y-auto mr-8`}>
-      <p className="text-2xl">{job.Role}</p>
-      <p className="text-xl">{job.Company}</p>
+      <p className="text-2xl"><HighlightText text={job.Role} query={query} /></p>
+      <p className="text-xl"><HighlightText text={job.Company} query={query} /></p>
       <div className="flex flex-col gap-1 mt-10 text-md h-40">
         <p className="flex">
           <span className={`${theme.spanJobsInfoElems}`}>🎯</span>
@@ -30,7 +32,10 @@ export function JobInfoCard({ job }: { job: Job | null }) {
           <span>{job.SalaryMin} - {job.SalaryMax}</span>
         </p>
       </div>
-      <div className={`text-sm **:${theme.text}!`} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.Description) }} />
+      <div
+        className={`text-sm **:${theme.text}!`}
+        dangerouslySetInnerHTML={{ __html: highlightHtml(DOMPurify.sanitize(job.Description), query) }}
+      />
       <div className="flex justify-center gap-2 m-10">
         <button className={`${theme.buttonJobLink} ${theme.buttonJobDescription}`}>
           <a href={job.OfferUrl} target="_blank">Apply</a>
