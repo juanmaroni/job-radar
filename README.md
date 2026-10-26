@@ -2,7 +2,7 @@
 
 A microservices-based job search platform. It pulls remote job listings from a public API, scores each one against a configurable keyword profile, stores the results, and lets you browse the listings and track your applications on a Kanban board.
 
-> **Status:** work in progress. See the [roadmap](#roadmap).
+> **Status:** work in progress.
 
 ## Features
 
